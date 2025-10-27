@@ -1,220 +1,80 @@
-
-:root {
-  --color-background: #f4f5f7;
-  --color-surface: #ffffff;
-  --color-accent: #2f80ed;
-  --color-accent-dark: #1c5cc1;
-  --color-muted: #6b7280;
-  --color-border: rgba(15, 23, 42, 0.08);
-  --radius: 14px;
-  --shadow: 0 14px 50px -25px rgba(15, 23, 42, 0.55);
-  font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 body {
-  margin: 0;
-  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: #eef3ff;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 3.5rem 1.5rem;
-  background: linear-gradient(135deg, #f7fafc 0%, #e0ecff 100%);
-  color: #0f172a;
+  padding: 30px;
 }
 
+/* Main app container */
 #app {
-  width: min(32rem, 100%);
-  max-width: min(32rem, 100%) !important;
-  padding: 1.75rem;
-  background: var(--color-surface);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  display: grid;
-  gap: 1rem;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 350px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-#app > input[type="text"],
-#app > input:not([type]) {
+/* Search bar */
+input {
   width: 100%;
-  padding: 0.85rem 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: calc(var(--radius) - 4px);
-  background-color: #f8fafc;
-  font-size: 1rem;
-  color: inherit;
-  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
-#app > input[type="text"]:focus,
-#app > input:not([type]):focus {
-  outline: none;
-  border-color: rgba(47, 128, 237, 0.45);
-  box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.2);
-  background-color: #fff;
-}
-
-#app > button {
-  padding: 0.75rem 1.1rem;
-  border: 0;
-  border-radius: calc(var(--radius) - 6px);
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+/* Buttons */
+button {
+  background: #2f80ed;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
   cursor: pointer;
-  transition: transform 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
 }
 
-#app > button:first-of-type {
-  background: var(--color-accent);
-  color: #fff;
-  box-shadow: 0 10px 25px -12px rgba(47, 128, 237, 0.8);
+button:hover {
+  background: #1c5cc1;
 }
 
-#app > button:first-of-type:hover {
-  background: var(--color-accent-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 35px -15px rgba(28, 92, 193, 0.8);
+/* Align the top buttons to the right */
+.button-group {
+  display: flex;
+  justify-content: flex-end; /* push buttons to the right */
+  gap: 8px; /* space between buttons */
+  margin-bottom: 10px;
 }
 
-#app > button:first-of-type:active {
-  transform: translateY(0);
-  box-shadow: 0 8px 20px -16px rgba(28, 92, 193, 0.7);
-}
-
-#app > button:nth-of-type(2) {
-  background: rgba(47, 128, 237, 0.12);
-  color: var(--color-accent);
-}
-
-#app > button:nth-of-type(2):hover {
-  background: rgba(47, 128, 237, 0.18);
-}
-
-#app > div {
-  margin-top: 0.75rem;
-  padding: 1.25rem;
-  border: 1px solid var(--color-border);
-  border-radius: calc(var(--radius) - 2px);
-  background: #f9fbff;
-  display: grid;
-  gap: 0.8rem;
+/* Product card */
+.product-card {
+  margin-top: 15px;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 8px;
   text-align: center;
-  transition: box-shadow 160ms ease, transform 160ms ease;
 }
 
-#app > div:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 26px -20px rgba(15, 23, 42, 0.7);
-}
-
-#app > div img {
+.product-card img {
   width: 100%;
-  height: auto;
-  border-radius: calc(var(--radius) - 8px);
-  object-fit: cover;
-  background: #eef2ff;
-  aspect-ratio: 4 / 3;
+  border-radius: 6px;
 }
 
-#app > div h1 {
-  margin: 0;
-  font-size: clamp(1.1rem, 2.4vw, 1.35rem);
-  letter-spacing: 0.01em;
+.product-card h1 {
+  margin: 10px 0 5px;
+  font-size: 18px;
 }
 
-#app > div p {
-  margin: 0;
-  font-size: 0.95rem;
-  color: var(--color-muted);
-  line-height: 1.55;
+.product-card p {
+  margin: 5px 0 10px;
+  color: #555;
+  font-size: 14px;
 }
 
-#app > div button {
-  width: fit-content;
-  margin: 0 auto;
-  padding: 0.6rem 1.3rem;
-  border: 0;
-  border-radius: calc(var(--radius) - 6px);
-  background: var(--color-accent);
-  color: #fff;
-  font-size: 0.92rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
-}
-
-#app > div button:hover {
-  background: var(--color-accent-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 8px 22px -12px rgba(28, 92, 193, 0.75);
-}
-
-#app > div button:active {
-  transform: translateY(0);
-  box-shadow: 0 6px 18px -14px rgba(28, 92, 193, 0.7);
-}
-
-@media (min-width: 768px) {
-  body {
-    padding: 4.5rem 2.5rem;
-  }
-
-  #app {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-areas:
-      "search cart"
-      "product product";
-    gap: 1.4rem;
-  }
-
-  #app > input[type="text"],
-  #app > input:not([type]) {
-    grid-area: search;
-  }
-
-  #app > button:first-of-type {
-    grid-area: cart;
-    justify-self: end;
-    min-width: 8.5rem;
-  }
-
-  #app > button:nth-of-type(2) {
-    grid-area: cart;
-    align-self: end;
-    justify-self: start;
-    margin-top: 3.3rem;
-  }
-
-  #app > div {
-    grid-area: product;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-areas:
-      "image details"
-      "image action";
-    text-align: left;
-    align-items: start;
-    gap: 1.4rem;
-  }
-
-  #app > div img {
-    grid-area: image;
-    aspect-ratio: 3 / 4;
-  }
-
-  #app > div h1,
-  #app > div p {
-    grid-area: details;
-  }
-
-  #app > div button {
-    grid-area: action;
-    margin: 0;
-    justify-self: start;
-  }
+.product-card button {
+  background: #2f80ed;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 15px;
 }

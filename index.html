@@ -1,38 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Vue Counter</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop Card</title>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css"/>
 </head>
 <body>
-  <div id="app" style="max-width: 20rem; margin: 4rem auto;">
-    <input>
-    <button>Search</button>
-    <button>Cart Items</button>
-
+  <div id="app">
+<input type="text" placeholder="Search products…" aria-label="Search products" />
+  <div class="button-group">
+    <button aria-label="Search">Search</button>
+    <button aria-label="Open cart">Cart Items</button>
+  </div>
+    <div class="product-card">
+      <img src="0.jpeg" alt="Small toy preview"/>
+      <div class="details">
+        <h1>Small Toy</h1>
+        <p>Just a small toy for kids — durable and fun.</p>
+      </div>
+      <button type="button">Add to cart</button>
+    </div>
     <div>
-      <img src="" alt="">
-      <button></button>
-      <h1></h1>
-      <p></p>
+      <input type="text" placeholder="Search products…" aria-label="Search products" />
+      <input type="text" placeholder="Search products…" aria-label="Search products" />
+      <input type="text" placeholder="Search products…" aria-label="Search products" />
+      <input type="text" placeholder="Search products…" aria-label="Search products" />
+      <button aria-label="Open cart">Place an order</button>
     </div>
   </div>
 
   <script>
     const { createApp } = Vue;
-
     createApp({
-      data() {
-        return {
-          
-        };
-      },
-      methods: {
-    
-      }
     }).mount('#app');
   </script>
 </body>
