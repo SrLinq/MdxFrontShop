@@ -9,31 +9,125 @@
 </head>
 <body>
   <div id="app">
-<input type="text" placeholder="Search products…" aria-label="Search products" />
-  <div class="button-group">
-    <button aria-label="Search">Search</button>
-    <button aria-label="Open cart">Cart Items</button>
-  </div>
-    <div class="product-card">
-      <img src="0.jpeg" alt="Small toy preview"/>
-      <div class="details">
-        <h1>Small Toy</h1>
-        <p>Just a small toy for kids — durable and fun.</p>
+    <form class="search-form" @submit.prevent>
+      <input
+        v-model="searchTerm"
+        type="text"
+        placeholder="Search products…"
+        aria-label="Search products"
+      />
+      <div class="button-group">
+        <button type="submit" aria-label="Search">Search</button>
+        <button type="button" aria-label="Open cart">
+          Cart Items ({{ cartCount }})
+        </button>
       </div>
-      <button type="button">Add to cart</button>
-    </div>
-    <div>
-      <input type="text" placeholder="Search products…" aria-label="Search products" />
-      <input type="text" placeholder="Search products…" aria-label="Search products" />
-      <input type="text" placeholder="Search products…" aria-label="Search products" />
-      <input type="text" placeholder="Search products…" aria-label="Search products" />
-      <button aria-label="Open cart">Place an order</button>
+    </form>
+     <p class="cart-status" aria-live="polite">
+      {{ cartMessage }}
+    </p>
+     <ul class="cart-list" v-if="cartCount">
+      <li v-for="item in cartDetails" :key="item.id">
+        <span>{{ item.name }}</span>
+        <span class="cart-count">×{{ item.count }}</span>
+      </li>
+    </ul>
+    <button>Filter</button>
+    <button>Sort</button>
+
+    <div
+      v-for="product in filteredProducts"
+      :key="product.id"
+      class="product-card"
+    >
+      <img :src="product.image" :alt="`${product.name} preview`"/>
+      <div class="details">
+        <h1>{{ product.name }}</h1>
+        <p>{{ product.description }}</p>
+        <p>{{product.count}}</p>
+      </div>
+      <button type="button" @click="addToCart(product)">Add to cart</button>
     </div>
   </div>
 
   <script>
     const { createApp } = Vue;
     createApp({
+      data() {
+        return {
+          searchTerm: '',
+          products: [
+            {
+              id: 1,
+              name: 'Small Toy',
+              description: 'Just a small toy for kids — durable and fun.',
+              image: '0.jpeg',
+              count:0
+            },
+            {
+              id: 2,
+              name: 'Puzzle Blocks',
+              description: 'Brightly colored blocks that develop motor skills.',
+              image: '0.jpeg',
+              count:1
+            },
+            {
+              id: 3,
+              name: 'Story Book',
+              description: 'An illustrated bedtime story for young readers.',
+              image: '0.jpeg',
+               count:4
+            }
+          ],
+          cart: []
+        };
+      },
+      computed: {
+        filteredProducts() {
+          const term = this.searchTerm.trim().toLowerCase();
+          if (!term) {
+            return this.products;
+          }
+          return this.products.filter(product =>
+            product.name.toLowerCase().includes(term)
+          );
+        },
+        cartCount() {
+          return this.cart.length;
+        },
+        cartMessage() {
+          if (!this.cartCount) {
+            return 'Your cart is empty.';
+          }
+          return `You have ${this.cartCount} item${this.cartCount === 1 ? '' : 's'} in the cart.`;
+        },
+        cdisabledButton(){
+          if(product.count ===0){
+
+          }
+        },
+        cartDetails() {
+          const counts = new Map();
+          this.cart.forEach(product => {
+            const existing = counts.get(product.id);
+            if (existing) {
+              existing.count += 1;
+            } else {
+              counts.set(product.id, {
+                id: product.id,
+                name: product.name,
+                count: 1
+              });
+            }
+          });
+          return Array.from(counts.values());
+        }
+      },
+      methods: {
+        addToCart(product) {
+          this.cart.push(product);
+        }
+      }
     }).mount('#app');
   </script>
 </body>
