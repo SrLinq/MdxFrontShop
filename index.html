@@ -3,21 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vue Connection</title>
+  <title>Simple Vue Counter</title>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <div id="app">
-    {{ message }}
+  <div id="app" style="max-width: 20rem; margin: 4rem auto;">
+    <input>
+    <button>Search</button>
+    <button>Cart Items</button>
+
+    <div>
+      <img src="" alt="">
+      <button></button>
+      <h1></h1>
+      <p></p>
+    </div>
   </div>
+
   <script>
     const { createApp } = Vue;
 
     createApp({
       data() {
         return {
-          message: 'Hello from Vue!'
+          
         };
+      },
+      methods: {
+    
       }
     }).mount('#app');
   </script>
