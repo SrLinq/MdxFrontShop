@@ -1,134 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Shop Card</title>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <link rel="stylesheet" href="./styles.css"/>
-</head>
-<body>
-  <div id="app">
-    <form class="search-form" @submit.prevent>
-      <input
-        v-model="searchTerm"
-        type="text"
-        placeholder="Search products…"
-        aria-label="Search products"
-      />
-      <div class="button-group">
-        <button type="submit" aria-label="Search">Search</button>
-        <button type="button" aria-label="Open cart">
-          Cart Items ({{ cartCount }})
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop Card</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- CATALOG PAGE -->
+      <div v-show="currentPage === 'catalog'" class="page page--catalog">
+        <form class="search-form" @submit.prevent>
+          <input
+            v-model="searchTerm"
+            type="text"
+            placeholder="Search products…"
+            aria-label="Search products"
+          />
+          <div class="button-group">
+            <button type="submit" aria-label="Search">
+              Search
+            </button>
+            <button type="button" aria-label="Open cart" @click="goToPage('cart')">
+              Cart Items ({{ cartCount }})
+            </button>
+          </div>
+        </form>
+
+        <div class="toolbar">
+          <button>Filter</button>
+          <button @click="sort()">Sort</button>
+        </div>
+
+        <section class="products-grid">
+          <div
+            v-for="product in filteredProducts"
+            :key="product.id"
+            class="product-card"
+          >
+            <img :src="product.image" :alt="`${product.name} preview`" />
+            <div class="details">
+              <h1>{{ product.name }}</h1>
+              <p>{{ product.description }}</p>
+              <p>Left: {{ product.count }}</p>
+              <p>Price: {{product.price}}</p>
+            </div>
+            <button
+              type="button"
+              v-if="product.count > 0"
+              @click="addToCart(product)"
+            >
+              Add to cart
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- CART PAGE -->
+      <div v-show="currentPage === 'cart'" class="page page--cart">
+        <form class="search-form" @submit.prevent>
+          <div class="button-group">
+            <button
+              type="button"
+              aria-label="Show products"
+              @click="goToPage('catalog')"
+            >
+              Back to products
+            </button>
+          </div>
+        </form>
+
+        <p class="cart-status" aria-live="polite">{{ cartMessage }}</p>
+
+        <ul class="cart-list" v-if="cartCount">
+          <li v-for="item in cartDetails" :key="item.id">
+            <span>{{ item.name }}</span>
+            <span class="cart-count">×{{ item.count }}</span>
+            <button @click="deleteFromCart(item)">Delete item</button>
+          </li>
+        </ul>
+        <p>{{ overallPrice }}</p>
+        <button type="button" :disabled="!cartCount" @click="proceedToDetails">
+          Go to order
         </button>
       </div>
-    </form>
-     <p class="cart-status" aria-live="polite">
-      {{ cartMessage }}
-    </p>
-     <ul class="cart-list" v-if="cartCount">
-      <li v-for="item in cartDetails" :key="item.id">
-        <span>{{ item.name }}</span>
-        <span class="cart-count">×{{ item.count }}</span>
-      </li>
-    </ul>
-    <button>Filter</button>
-    <button>Sort</button>
-
-    <div
-      v-for="product in filteredProducts"
-      :key="product.id"
-      class="product-card"
-    >
-      <img :src="product.image" :alt="`${product.name} preview`"/>
-      <div class="details">
-        <h1>{{ product.name }}</h1>
-        <p>{{ product.description }}</p>
-        <p>{{product.count}}</p>
+      <div v-show="currentPage === 'details'" class="page page--details">
+        <h1>Enter your details</h1>
+        <section class="details-form">
+          <label for="customer-name">Your name</label>
+          <input
+            id="customer-name"
+            v-model="customerName"
+            type="text"
+            placeholder="Jane Doe"
+            aria-label="Your full name"
+          />
+          <label for="customer-phone">Your phone</label>
+          <input
+            id="customer-phone"
+            v-model="customerPhone"
+            type="tel"
+            placeholder="+1 555 123 4567"
+            aria-label="Your phone number"
+          />
+          <label for="customer-email">Your email</label>
+          <input
+            id="customer-email"
+            v-model="customerEmail"
+            type="email"
+            placeholder="you@example.com"
+            aria-label="Your email address"
+          />
+          <label for="customer-address">Your address</label>
+          <textarea
+            id="customer-address"
+            v-model="customerAddress"
+            placeholder="123 Main St, Springfield"
+            aria-label="Your shipping address"
+          ></textarea>
+        </section>
+        <div class="button-group">
+          <button
+            type="button"
+            :disabled="!isDetailsComplete"
+            @click="reviewOrder"
+          >
+            Save and go to order
+          </button>
+          <button type="button" @click="goToPage('cart')">Back to cart</button>
+        </div>
       </div>
-      <button type="button" @click="addToCart(product)">Add to cart</button>
+      <div v-show="currentPage === 'summary'" class="page page--summary">
+        <h2>Your details</h2>
+        <p>Your name: {{ customerName || "—" }}</p>
+        <p>Your phone: {{ customerPhone || "—" }}</p>
+        <p>Your email: {{ customerEmail || "—" }}</p>
+        <p>Your address: {{ customerAddress || "—" }}</p>
+        <p>Your items</p>
+        <ul class="cart-list" v-if="cartCount">
+          <li v-for="item in cartDetails" :key="item.id">
+            <span>{{ item.name }}</span>
+            <span class="cart-count">×{{ item.count }}</span>
+          </li>
+        </ul>
+        <p>Total: {{ overallPrice }}</p>
+        <button>Order</button>
+        <div class="button-group">
+          <button type="button" @click="goToPage('details')">
+            Edit details
+          </button>
+          <button type="button" @click="goToPage('catalog')">
+            Continue shopping
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <script>
-    const { createApp } = Vue;
-    createApp({
-      data() {
-        return {
-          searchTerm: '',
-          products: [
-            {
-              id: 1,
-              name: 'Small Toy',
-              description: 'Just a small toy for kids — durable and fun.',
-              image: '0.jpeg',
-              count:0
-            },
-            {
-              id: 2,
-              name: 'Puzzle Blocks',
-              description: 'Brightly colored blocks that develop motor skills.',
-              image: '0.jpeg',
-              count:1
-            },
-            {
-              id: 3,
-              name: 'Story Book',
-              description: 'An illustrated bedtime story for young readers.',
-              image: '0.jpeg',
-               count:4
+    <script>
+      const { createApp } = Vue;
+      createApp({
+        data() {
+          return {
+            searchTerm: "",
+            products: [
+              {
+                id: 1,
+                name: "Small Toy",
+                description: "Just a small toy for kids — durable and fun.",
+                image: "0.jpeg",
+                count: 0,
+                price: 500,
+              },
+              {
+                id: 6,
+                name: "A Toy",
+                description: "Just a small toy for kids — durable and fun.",
+                image: "0.jpeg",
+                count: 7,
+                price: 400,
+              },
+              {
+                id: 2,
+                name: "Puzzle Blocks",
+                description:
+                  "Brightly colored blocks that develop motor skills.",
+                image: "0.jpeg",
+                count: 1,
+                price: 300,
+              },
+              {
+                id: 3,
+                name: "Story Book",
+                description: "An illustrated bedtime story for young readers.",
+                image: "0.jpeg",
+                count: 4,
+                price: 100,
+              },
+            ],
+            cart: [],
+            sortAscending: true,
+            currentPage: "catalog",
+            customerName: "",
+            customerPhone: "",
+            customerEmail: "",
+            customerAddress: "",
+          };
+        },
+        computed: {
+          filteredProducts() {
+            const term = this.searchTerm.trim().toLowerCase();
+            if (!term) {
+              return this.products;
             }
-          ],
-          cart: []
-        };
-      },
-      computed: {
-        filteredProducts() {
-          const term = this.searchTerm.trim().toLowerCase();
-          if (!term) {
-            return this.products;
-          }
-          return this.products.filter(product =>
-            product.name.toLowerCase().includes(term)
-          );
-        },
-        cartCount() {
-          return this.cart.length;
-        },
-        cartMessage() {
-          if (!this.cartCount) {
-            return 'Your cart is empty.';
-          }
-          return `You have ${this.cartCount} item${this.cartCount === 1 ? '' : 's'} in the cart.`;
-        },
-        cdisabledButton(){
-          if(product.count ===0){
-
-          }
-        },
-        cartDetails() {
-          const counts = new Map();
-          this.cart.forEach(product => {
-            const existing = counts.get(product.id);
-            if (existing) {
-              existing.count += 1;
-            } else {
-              counts.set(product.id, {
-                id: product.id,
-                name: product.name,
-                count: 1
-              });
+            return this.products.filter((product) =>
+              product.name.toLowerCase().includes(term)
+            );
+          },
+          isDetailsComplete() {
+            return Boolean(
+              this.customerName.trim() &&
+                this.customerPhone.trim() &&
+                this.customerEmail.trim() &&
+                this.customerAddress.trim()
+            );
+          },
+          cartCount() {
+            return this.cart.length;
+          },
+          cartMessage() {
+            if (!this.cartCount) {
+              return "Your cart is empty.";
             }
-          });
-          return Array.from(counts.values());
-        }
-      },
-      methods: {
-        addToCart(product) {
-          this.cart.push(product);
-        }
-      }
-    }).mount('#app');
-  </script>
-</body>
+            return `You have ${this.cartCount} item${
+              this.cartCount === 1 ? "" : "s"
+            } in the cart.`;
+          },
+          cartDetails() {
+            const counts = new Map();
+            this.cart.forEach((product) => {
+              const existing = counts.get(product.id);
+              if (existing) {
+                existing.count += 1;
+              } else {
+                counts.set(product.id, {
+                  id: product.id,
+                  name: product.name,
+                  count: 1,
+                });
+              }
+            });
+            return Array.from(counts.values());
+          },
+          overallPrice() {
+            return this.cart.reduce((sum, item) => sum + (item.price || 0), 0);
+          },
+        },
+        methods: {
+          goToPage(page) {
+            this.currentPage = page;
+          },
+          proceedToDetails() {
+            if (!this.cartCount) {
+              return;
+            }
+            this.goToPage("details");
+          },
+          reviewOrder() {
+            if (!this.isDetailsComplete) {
+              return;
+            }
+            this.goToPage("summary");
+          },
+          addToCart(product) {
+            if (product.count <= 0) {
+              return;
+            }
+            this.cart.push({
+              id: product.id,
+              name: product.name,
+              price: product.price,
+            });
+            product.count -= 1;
+          },
+          deleteFromCart(product) {
+            console.log(product);
+            this.cart.shift(product);
+            const match = this.products.find((item) => item.id === product.id);
+            if (match) {
+              match.count += 1;
+            }
+          },
+          sort() {
+            this.products.sort((a, b) => {
+              return this.sortAscending
+                ? a.name.localeCompare(b.name)
+                : b.name.localeCompare(a.name);
+            });
+            this.sortAscending = !this.sortAscending;
+          },
+        },
+      }).mount("#app");
+    </script>
+  </body>
 </html>

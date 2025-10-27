@@ -60,6 +60,36 @@ body {
   transform: scale(0.97);
 }
 
+.details-form {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.details-form label {
+  font-weight: 500;
+  color: #333;
+}
+
+.details-form input,
+.details-form textarea {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.details-form input:focus,
+.details-form textarea:focus {
+  border-color: #0077ff;
+  outline: none;
+}
+
+.details-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
 /* === Cart Status === */
 .cart-status {
   font-weight: 500;
@@ -145,11 +175,14 @@ body {
 
 /* === Responsive Design === */
 @media (min-width: 700px) {
+  @media (min-width: 700px) {
   #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    display: block;            /* no grid */
+    max-width: 1200px;         /* optional container width */
+    margin: 0 auto;            /* centers the block */
   }
+}
+
 
   .search-form {
     grid-column: 1 / -1;
@@ -159,4 +192,25 @@ body {
   .cart-list {
     grid-column: 1 / -1;
   }
+}
+
+/* Products grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+/* On wider screens, ensure the grid spans both columns of #app */
+@media (min-width: 700px) {
+  .products-grid {
+    grid-column: 1 / -1;
+  }
+}
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  align-items: start;
 }
