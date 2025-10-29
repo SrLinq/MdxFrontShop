@@ -1,6 +1,6 @@
-export class ApiFetch {
+class ApiFetch {
   constructor() {
-    this.baseUrl = "dd";
+    this.baseUrl = "http://localhost:3000/";
   }
 
   async get(url) {
@@ -15,7 +15,7 @@ export class ApiFetch {
     return response.json();
   }
 
-  async post(urt, data){
+  async post(url, data){
     const response = await fetch(`${this.baseUrl}${url}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
